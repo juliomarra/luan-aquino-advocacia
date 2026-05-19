@@ -6,7 +6,25 @@
   <meta name="description" content="Advogado criminal em São Paulo e região com atendimento estratégico e personalizado. Consultas jurídicas e defesa especializada.">
   <meta name="keywords" content="advogado criminal, advogado em São Paulo, advogado em Franco da Rocha, defesa criminal, advocacia criminal, escritório de advocacia, advogado trabalhista, advogado previdenciário, consultoria jurídica, advogado especialista criminal">
   <title>Advogado em São Paulo | Luan Aquino Advocacia</title>
-  <link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,400;0,600;0,700;1,400;1,600&family=EB+Garamond:ital,wght@0,400;1,400&family=Montserrat:wght@300;400;500;600;700&display=swap" rel="stylesheet"/>
+  <!-- PERFORMANCE -->
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+
+  <link
+    rel="preload"
+    as="style"
+    href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,400;0,600;0,700;1,400;1,600&family=EB+Garamond:ital,wght@0,400;1,400&family=Montserrat:wght@300;400;500;600;700&display=swap"
+    onload="this.onload=null;this.rel='stylesheet'"
+  >
+
+  <noscript>
+    <link
+      rel="stylesheet"
+      href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,400;0,600;0,700;1,400;1,600&family=EB+Garamond:ital,wght@0,400;1,400&family=Montserrat:wght@300;400;500;600;700&display=swap"
+    >
+  </noscript>
+
+  <link rel="preload" as="image" href="https://images.unsplash.com/photo-1589829545856-d10d557cf95f?w=1600&q=85"/>
   <style>
     *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
     :root {
@@ -151,6 +169,15 @@
     .reveal.d2 { transition-delay: 0.18s; }
     .reveal.d3 { transition-delay: 0.28s; }
     .reveal.visible { opacity: 1; transform: translateY(0); }
+
+    /* PERFORMANCE */
+    #sobre,
+    #atuacao,
+    #contato,
+    footer {
+      content-visibility: auto;
+      contain-intrinsic-size: 1000px;
+    }
 
     /* RESPONSIVE */
     @media (max-width: 960px) {
@@ -319,16 +346,29 @@
 <script>
   const obs = new IntersectionObserver(entries => {
     entries.forEach(e => {
-      if (e.isIntersecting) e.target.classList.add('visible');
+      if (e.isIntersecting) {
+        e.target.classList.add('visible');
+        obs.unobserve(e.target);
+      }
     });
   }, { threshold: 0.1 });
 
   document.querySelectorAll('.reveal').forEach(el => obs.observe(el));
 
+  const navbar = document.getElementById('navbar');
+
+  let ticking = false;
+
   window.addEventListener('scroll', () => {
-    document.getElementById('navbar')
-      .classList.toggle('scrolled', scrollY > 60);
-  });
+    if (!ticking) {
+      window.requestAnimationFrame(() => {
+        navbar.classList.toggle('scrolled', window.scrollY > 60);
+        ticking = false;
+      });
+
+      ticking = true;
+    }
+  }, { passive: true });
 
   function enviarWhatsApp() {
 
